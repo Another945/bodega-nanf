@@ -1,0 +1,138 @@
+<ion-header>
+  <ion-toolbar color="danger">
+    <ion-title>Punto de Venta</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button>
+        🛒
+        <ion-badge color="light">{{ cantidadTotal }}</ion-badge>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="contenedor">
+
+    <h2>Productos disponibles</h2>
+
+    <div class="buscador">
+      🔍
+      <input
+        type="text"
+        placeholder="Buscar producto..."
+        [(ngModel)]="busqueda">
+    </div>
+
+    <div class="estadisticas">
+      <div class="stat-card">
+        <h3>{{ productos.length }}</h3>
+        <span>Productos</span>
+      </div>
+
+      <div class="stat-card">
+        <h3>S/ {{ total.toFixed(2) }}</h3>
+        <span>Venta actual</span>
+      </div>
+
+      <div class="stat-card">
+        <h3>{{ cantidadTotal }}</h3>
+        <span>En carrito</span>
+      </div>
+    </div>
+
+    <div class="productos-lista">
+
+      @for(producto of productosFiltrados; track producto.id){
+
+        <div class="producto-card">
+
+          <div class="producto-img">
+            {{ producto.imagen }}
+          </div>
+
+          <div class="producto-info">
+            <h3>{{ producto.nombre }}</h3>
+            <p>{{ producto.descripcion }}</p>
+            <strong>S/ {{ +producto.precio | number:'1.2-2' }}</strong>
+          </div>
+
+          <div class="producto-accion">
+            <span class="stock">Stock: {{ producto.stock }}</span>
+
+            <ion-button
+              size="small"
+              color="success"
+              (click)="agregar(producto)">
+              🛒 Agregar
+            </ion-button>
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+  <div class="carrito-panel">
+
+    <div class="barra"></div>
+
+    <div class="carrito-header">
+      <h2>🛒 Carrito de venta <span>{{ cantidadTotal }}</span></h2>
+
+      <button class="vaciar" (click)="vaciarCarrito()">
+        🗑 Vaciar carrito
+      </button>
+    </div>
+
+    @if(carrito.length === 0){
+      <p class="vacio">Todavía no agregaste productos.</p>
+    }
+
+    <div class="carrito-lista">
+
+      @for(item of carrito; track item.id){
+
+        <div class="item-carrito">
+
+          <div class="item-nombre">
+            <span>{{ item.imagen }}</span>
+            <strong>{{ item.nombre }}</strong>
+          </div>
+
+          <div class="cantidad">
+            <button (click)="disminuir(item)">−</button>
+            <span>{{ item.cantidad }}</span>
+            <button (click)="aumentar(item)">+</button>
+          </div>
+
+          <strong>S/ {{ (+item.precio * item.cantidad) | number:'1.2-2' }}</strong>
+
+          <button class="eliminar" (click)="eliminar(item.id)">×</button>
+
+        </div>
+
+      }
+
+    </div>
+
+    <div class="total">
+      <span>TOTAL</span>
+      <strong>S/ {{ total.toFixed(2) }}</strong>
+    </div>
+
+    <ion-button
+      expand="block"
+      color="primary"
+      class="btn-finalizar"
+      (click)="finalizarVenta()">
+      🧾 Finalizar venta
+    </ion-button>
+
+  </div>
+
+</ion-content>

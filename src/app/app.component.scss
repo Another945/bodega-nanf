@@ -1,0 +1,25 @@
+.menu-inferior {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  background: white;
+}
+
+.item-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 22px;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.item-menu span {
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.item-menu:hover {
+  color: #2563eb;
+}

@@ -1,0 +1,270 @@
+ion-content {
+  --background: linear-gradient(180deg, #eef2ff 0%, #f8fafc 40%, #ffffff 100%);
+}
+
+.dashboard {
+  padding: 18px;
+  padding-bottom: 100px;
+}
+
+.hero-dashboard {
+  background: linear-gradient(135deg, #0f172a, #1d4ed8, #7c3aed);
+  color: white;
+  border-radius: 30px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 18px 35px rgba(37, 99, 235, .28);
+  margin-bottom: 20px;
+}
+
+.saludo {
+  margin: 0;
+  color: #bfdbfe;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.hero-dashboard h1 {
+  margin: 6px 0;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.hero-dashboard span {
+  color: #e0e7ff;
+  font-size: 13px;
+}
+
+.hero-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 24px;
+  background: rgba(255,255,255,.18);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.card {
+  color: white;
+  padding: 18px;
+  border-radius: 26px;
+  box-shadow: 0 12px 25px rgba(15, 23, 42, .16);
+  min-height: 145px;
+}
+
+.card span {
+  font-size: 28px;
+}
+
+.card h3 {
+  margin: 10px 0 4px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 900;
+}
+
+.card p {
+  margin: 8px 0 0;
+  font-size: 11px;
+  opacity: .95;
+}
+
+.ventas {
+  background: linear-gradient(135deg, #059669, #10b981);
+}
+
+.productos {
+  background: linear-gradient(135deg, #2563eb, #38bdf8);
+}
+
+.stock {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+}
+
+.merma {
+  background: linear-gradient(135deg, #dc2626, #f97316);
+}
+
+.titulo {
+  color: #0f172a;
+  font-size: 23px;
+  font-weight: 900;
+  margin: 26px 0 14px;
+}
+
+.alertas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.alerta {
+  background: rgba(255, 255, 255, .88);
+  backdrop-filter: blur(16px);
+  border-radius: 22px;
+  padding: 15px;
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  box-shadow: 0 8px 20px rgba(15,23,42,.10);
+}
+
+.alerta span {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+
+.alerta h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.alerta p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.roja {
+  border-left: 6px solid #dc2626;
+}
+
+.naranja {
+  border-left: 6px solid #f97316;
+}
+
+.azul {
+  border-left: 6px solid #2563eb;
+}
+
+.metricas-modernas {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.metrica-card {
+  background: rgba(255, 255, 255, .9);
+  backdrop-filter: blur(16px);
+  border-radius: 24px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, .10);
+  border-left: 6px solid transparent;
+}
+
+.metrica-icono {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+}
+
+.metrica-card h3 {
+  margin: 0;
+  font-size: 15px;
+  color: #0f172a;
+  font-weight: 900;
+}
+
+.metrica-card p {
+  margin: 4px 0 0;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.ventas-moderna {
+  border-left-color: #10b981;
+}
+
+.ventas-moderna .metrica-icono {
+  background: #dcfce7;
+}
+
+.ventas-moderna p {
+  color: #059669;
+}
+
+.stock-moderna {
+  border-left-color: #2563eb;
+}
+
+.stock-moderna .metrica-icono {
+  background: #dbeafe;
+}
+
+.stock-moderna p {
+  color: #2563eb;
+}
+
+.merma-moderna {
+  border-left-color: #ef4444;
+}
+
+.merma-moderna .metrica-icono {
+  background: #fee2e2;
+}
+
+.merma-moderna p {
+  color: #ef4444;
+}
+
+.actividad {
+  background: rgba(255, 255, 255, .9);
+  backdrop-filter: blur(16px);
+  border-radius: 24px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(15,23,42,.10);
+}
+
+.actividad-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.actividad-item:last-child {
+  border-bottom: none;
+}
+
+.actividad-item span {
+  font-size: 27px;
+}
+
+.actividad-item p {
+  margin: 0;
+  color: #334155;
+  font-weight: 700;
+  font-size: 14px;
+}

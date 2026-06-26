@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar color="danger">
+    <ion-title>Inventario</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="agregarProducto()">
+        ➕
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="contenedor">
+
+    <div class="resumen">
+      <h1>📦 Productos</h1>
+      <p>Gestiona inventario, precios y reposición de stock.</p>
+    </div>
+
+    <div class="product-grid">
+
+      @for(producto of productos; track producto.id){
+
+        <div class="product-card">
+
+          <div class="product-img">
+            {{ producto.imagen }}
+          </div>
+
+          <h2>{{ producto.nombre }}</h2>
+
+          <p>{{ producto.descripcion }}</p>
+
+          <h3>S/ {{ producto.precio.toFixed(2) }}</h3>
+
+          <span class="stock" [class.stock-bajo]="producto.stock <= 10">
+            Stock: {{ producto.stock }}
+          </span>
+
+          <div class="acciones">
+
+            <button class="btn editar" (click)="editarProducto(producto)">
+              ✏️ Editar
+            </button>
+
+            <button class="btn reponer" (click)="reponerStock(producto)">
+              ➕ Stock
+            </button>
+
+            <button class="btn eliminar" (click)="eliminarProducto(producto)">
+              🗑 Eliminar
+            </button>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+</ion-content>

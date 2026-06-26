@@ -1,0 +1,7 @@
+{
+  "name": "bodega-nanf",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

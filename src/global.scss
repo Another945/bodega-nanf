@@ -1,0 +1,125 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+@import '@ionic/angular/css/palettes/dark.system.css';
+:root {
+  --color-primary: #2563eb;
+  --color-secondary: #7c3aed;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f97316;
+  --color-dark: #0f172a;
+  --color-muted: #64748b;
+  --color-bg: #f8fafc;
+}
+
+ion-content {
+  --background: linear-gradient(180deg, #eef2ff 0%, #f8fafc 45%, #ffffff 100%);
+}
+
+ion-toolbar {
+  --background: linear-gradient(135deg, #111827, #2563eb);
+  --color: white;
+}
+
+ion-title {
+  font-weight: 900;
+  letter-spacing: .3px;
+}
+
+ion-tab-bar {
+  --background: rgba(255, 255, 255, .85);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(226, 232, 240, .9);
+  height: 68px;
+  box-shadow: 0 -8px 25px rgba(15, 23, 42, .08);
+}
+
+ion-tab-button {
+  --color: #64748b;
+  --color-selected: #2563eb;
+  font-weight: 800;
+}
+
+ion-card,
+.card,
+.product-card,
+.grafico-card,
+.venta-item,
+.alerta,
+.actividad,
+.metrica-card,
+.carrito-panel {
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,.45);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.card:active,
+.product-card:active,
+.venta-item:active,
+.alerta:active,
+.metrica-card:active {
+  transform: scale(.97);
+}
+
+ion-button {
+  font-weight: 900;
+  text-transform: none;
+  --border-radius: 14px;
+}
+
+button {
+  cursor: pointer;
+}
+
+@keyframes subir {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard,
+.reportes,
+.contenedor {
+  animation: subir .45s ease;
+}

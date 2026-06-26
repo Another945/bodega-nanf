@@ -1,0 +1,157 @@
+ion-content {
+  --background: #f8fafc;
+}
+
+.reportes {
+  padding: 16px;
+  padding-bottom: 95px;
+}
+
+.hero {
+  background: linear-gradient(135deg, #111827, #2563eb);
+  color: white;
+  border-radius: 26px;
+  padding: 22px;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, .25);
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 900;
+}
+
+.hero p {
+  margin: 8px 0 0;
+  color: #dbeafe;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.card {
+  color: white;
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, .15);
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 13px;
+}
+
+.card h2 {
+  margin: 10px 0 0;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.azul {
+  background: linear-gradient(135deg, #2563eb, #38bdf8);
+}
+
+.verde {
+  background: linear-gradient(135deg, #059669, #10b981);
+}
+
+.rojo {
+  background: linear-gradient(135deg, #dc2626, #f97316);
+}
+
+.morado {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+}
+
+.titulo {
+  margin: 24px 0 12px;
+  color: #111827;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.notificaciones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notificacion {
+  background: white;
+  padding: 14px;
+  border-radius: 18px;
+  font-weight: 700;
+  box-shadow: 0 5px 14px rgba(15, 23, 42, .10);
+}
+
+.notificacion.alerta {
+  border-left: 6px solid #f97316;
+}
+
+.notificacion.merma {
+  border-left: 6px solid #ef4444;
+}
+
+.notificacion.venta {
+  border-left: 6px solid #10b981;
+}
+
+.grafico-card {
+  background: white;
+  border-radius: 24px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, .10);
+}
+
+.grafico-card h3 {
+  margin-top: 0;
+  color: #111827;
+}
+
+.historial {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.venta-item {
+  background: white;
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 5px 14px rgba(15, 23, 42, .10);
+}
+
+.venta-item h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 16px;
+}
+
+.venta-item p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.venta-item strong {
+  color: #2563eb;
+  font-size: 18px;
+}
+
+.stock-item strong {
+  color: #ef4444;
+}
+
+.btn-pdf {
+  margin-top: 22px;
+  height: 50px;
+  font-weight: 900;
+}

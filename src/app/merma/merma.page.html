@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar color="danger">
+    <ion-title>Control de Merma</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="contenedor">
+
+    <div class="resumen">
+      <h2>📉 Pérdida estimada</h2>
+      <h1>S/ {{ mermaTotal.toFixed(2) }}</h1>
+      <p>Productos vencidos, dañados o con pérdida registrada.</p>
+    </div>
+
+    <h2>Productos con merma</h2>
+
+    <div class="lista">
+
+      @for(item of productosMerma; track item.nombre; let i = $index){
+
+        <div class="card-merma">
+
+          <div>
+            <h3>{{ item.nombre }}</h3>
+            <p>{{ item.motivo }}</p>
+            <span>Cantidad: {{ item.cantidad }}</span>
+          </div>
+
+          <div class="monto">
+            <strong>S/ {{ item.perdida.toFixed(2) }}</strong>
+
+            <small [class.alto]="item.estado === 'Alto'">
+              {{ item.estado }}
+            </small>
+
+            <button
+              class="btn-eliminar"
+              (click)="eliminarMerma(i)">
+              Eliminar
+            </button>
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+    <ion-button
+      expand="block"
+      color="danger"
+      class="btn-registrar"
+      (click)="registrarMerma()">
+      Registrar nueva merma
+    </ion-button>
+
+  </div>
+
+</ion-content>

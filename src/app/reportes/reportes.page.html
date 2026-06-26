@@ -1,0 +1,137 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Reportes Inteligentes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="reportes">
+
+    <div class="hero">
+      <h1>📊 Panel de Reportes</h1>
+    </div>
+
+    <div class="cards">
+
+      <div class="card azul">
+        <h3>Ventas Hoy</h3>
+        <h2>S/ {{ ventasHoy.toFixed(2) }}</h2>
+      </div>
+
+      <div class="card verde">
+        <h3>Ventas Totales</h3>
+        <h2>S/ {{ ventasTotales.toFixed(2) }}</h2>
+      </div>
+
+      <div class="card rojo">
+        <h3>Merma</h3>
+        <h2>S/ {{ mermaTotal.toFixed(2) }}</h2>
+      </div>
+
+      <div class="card morado">
+        <h3>Stock Bajo</h3>
+        <h2>{{ stockBajo.length }}</h2>
+      </div>
+
+    </div>
+
+    <h2 class="titulo">⚠️ Notificaciones</h2>
+
+    <div class="notificaciones">
+
+      @if(stockBajo.length > 0){
+        <div class="notificacion alerta">
+          ⚠️ Hay {{ stockBajo.length }} productos con stock bajo.
+        </div>
+      }
+
+      @if(mermaTotal > 0){
+        <div class="notificacion merma">
+          📉 La merma acumulada es S/ {{ mermaTotal.toFixed(2) }}.
+        </div>
+      }
+
+      @if(ventasTotales > 0){
+        <div class="notificacion venta">
+          🛒 Se registraron ventas por S/ {{ ventasTotales.toFixed(2) }}.
+        </div>
+      }
+
+    </div>
+
+    <h2 class="titulo">📈 Gráficos Reales</h2>
+
+    <div class="grafico-card">
+      <h3>Ventas vs Merma</h3>
+      <canvas id="graficoVentas"></canvas>
+    </div>
+
+    <div class="grafico-card">
+      <h3>Productos más vendidos</h3>
+      <canvas id="graficoProductos"></canvas>
+    </div>
+
+    <h2 class="titulo">🧾 Historial de Ventas</h2>
+
+    <div class="historial">
+
+      @if(historialVentas.length === 0){
+        <div class="venta-item">
+          <p>Aún no hay ventas registradas.</p>
+        </div>
+      }
+
+      @for(venta of historialVentas; track venta.id){
+
+        <div class="venta-item">
+
+          <div>
+            <h3>Venta #{{ venta.id }}</h3>
+            <p>{{ venta.fecha | date:'short' }}</p>
+          </div>
+
+          <strong>S/ {{ (+venta.total).toFixed(2) }}</strong>
+
+        </div>
+
+      }
+
+    </div>
+
+    <h2 class="titulo">📦 Stock Bajo</h2>
+
+    <div class="historial">
+
+      @if(stockBajo.length === 0){
+        <div class="venta-item">
+          <p>No hay productos con stock bajo.</p>
+        </div>
+      }
+
+      @for(producto of stockBajo; track producto.nombre){
+
+        <div class="venta-item stock-item">
+          <div>
+            <h3>{{ producto.nombre }}</h3>
+            <p>Requiere reposición</p>
+          </div>
+
+          <strong>{{ producto.stock }} und.</strong>
+        </div>
+
+      }
+
+    </div>
+
+    <ion-button
+      expand="block"
+      color="danger"
+      class="btn-pdf"
+      (click)="exportarPDF()">
+      📄 Exportar Reporte PDF
+    </ion-button>
+
+  </div>
+
+</ion-content>

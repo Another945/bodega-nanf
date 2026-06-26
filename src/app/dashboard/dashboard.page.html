@@ -1,0 +1,131 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Bodega NANF</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="dashboard">
+
+    <div class="hero-dashboard">
+      <div>
+        <p class="saludo">Bienvenido 👋</p>
+        <h1>Administrador</h1>
+      </div>
+
+      <div class="hero-icon">🏪</div>
+    </div>
+
+    <div class="cards">
+
+      <div class="card ventas">
+        <span>🛒</span>
+        <h3>Ventas Hoy</h3>
+        <h2>S/ {{ ventasHoy.toFixed(2) }}</h2>
+      </div>
+
+      <div class="card productos">
+        <span>📦</span>
+        <h3>Inventario</h3>
+        <h2>{{ totalProductos }}</h2>
+      </div>
+
+      <div class="card stock">
+        <span>⚠️</span>
+        <h3>Stock Bajo</h3>
+        <h2>{{ stockBajo }}</h2>
+      </div>
+
+      <div class="card merma">
+        <span>📉</span>
+        <h3>Merma</h3>
+        <h2>S/ {{ mermaTotal.toFixed(2) }}</h2>
+      </div>
+
+    </div>
+
+    <h2 class="titulo">Centro de alertas</h2>
+
+    <div class="alertas">
+
+      <div class="alerta roja">
+        <span>⚠️</span>
+        <div>
+          <h3>Stock crítico</h3>
+          <p>{{ stockBajo }} productos necesitan reposición.</p>
+        </div>
+      </div>
+
+      <div class="alerta naranja">
+        <span>📉</span>
+        <div>
+          <h3>Control de merma</h3>
+          <p>Pérdida registrada: S/ {{ mermaTotal.toFixed(2) }}.</p>
+        </div>
+      </div>
+
+      <div class="alerta azul">
+        <span>📊</span>
+        <div>
+          <h3>Ventas del día</h3>
+          <p>Total vendido hoy: S/ {{ ventasHoy.toFixed(2) }}.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <h2 class="titulo">Rendimiento del negocio</h2>
+
+    <div class="metricas-modernas">
+
+      <div class="metrica-card ventas-moderna">
+        <div class="metrica-icono">🛒</div>
+        <div>
+          <h3>Ventas</h3>
+          <p>S/ {{ ventasHoy.toFixed(2) }}</p>
+        </div>
+      </div>
+
+      <div class="metrica-card stock-moderna">
+        <div class="metrica-icono">📦</div>
+        <div>
+          <h3>Stock bajo</h3>
+          <p>{{ stockBajo }} productos</p>
+        </div>
+      </div>
+
+      <div class="metrica-card merma-moderna">
+        <div class="metrica-icono">📉</div>
+        <div>
+          <h3>Merma</h3>
+          <p>S/ {{ mermaTotal.toFixed(2) }}</p>
+        </div>
+      </div>
+
+    </div>
+
+    <h2 class="titulo">Actividad reciente</h2>
+
+    <div class="actividad">
+
+      <div class="actividad-item">
+        <span>🛒</span>
+        <p>Ventas del día: S/ {{ ventasHoy.toFixed(2) }}</p>
+      </div>
+
+      <div class="actividad-item">
+        <span>📦</span>
+        <p>{{ totalProductos }} productos registrados en inventario.</p>
+      </div>
+
+      <div class="actividad-item">
+        <span>📉</span>
+        <p>Merma acumulada: S/ {{ mermaTotal.toFixed(2) }}</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</ion-content>

@@ -1,0 +1,113 @@
+ion-content {
+  --background: #f7f7f7;
+}
+
+.contenedor {
+  padding: 16px;
+}
+
+.resumen {
+  background: linear-gradient(135deg, #e50019, #ff7b00);
+  color: white;
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.18);
+}
+
+.resumen h2 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.resumen h1 {
+  font-size: 42px;
+  margin: 12px 0;
+}
+
+.resumen p {
+  margin: 0;
+  font-size: 14px;
+}
+
+h2 {
+  color: #1f2937;
+  margin: 22px 0 12px;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-merma {
+  background: white;
+  border-radius: 18px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0,0,0,.10);
+}
+
+.card-merma h3 {
+  margin: 0;
+  color: #111827;
+}
+
+.card-merma p {
+  color: #6b7280;
+  margin: 5px 0;
+}
+
+.card-merma span {
+  font-size: 13px;
+  color: #555;
+}
+
+.monto {
+  text-align: right;
+}
+
+.monto strong {
+  color: #e50019;
+  font-size: 18px;
+}
+
+.monto small {
+  display: block;
+  margin-top: 6px;
+  padding: 5px 8px;
+  border-radius: 10px;
+  background: #fff3cd;
+  color: #b45309;
+  font-weight: bold;
+}
+
+.monto small.alto {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.btn-registrar {
+  margin-top: 20px;
+  height: 50px;
+  font-weight: bold;
+}
+.btn-eliminar {
+  margin-top: 8px;
+  border: none;
+  background: #dc2626;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.btn-eliminar:hover {
+  background: #b91c1c;
+}
+ion-content {
+  --padding-bottom: 90px;
+}
