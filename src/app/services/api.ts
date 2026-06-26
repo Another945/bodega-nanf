@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class Api {
 
-private url = 'http://192.168.100.134:3000';
+private url = 'https://backend-bodega-production.up.railway.app';
 
   constructor(private http: HttpClient) {}
 
