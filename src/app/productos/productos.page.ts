@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { Api } from '../services/api';
 
@@ -11,158 +11,50 @@ import { Api } from '../services/api';
   imports: [IonicModule, CommonModule],
 })
 export class ProductosPage implements OnInit {
-
   productos: any[] = [];
 
-  constructor(
-    private api: Api,
-    private alertController: AlertController
-  ) {}
+  constructor(private api: Api) {}
 
-  ngOnInit() {
-    this.cargarProductos();
-  }
-
-  ionViewWillEnter() {
-    this.cargarProductos();
-  }
+  ngOnInit() { this.cargarProductos(); }
+  ionViewWillEnter() { this.cargarProductos(); }
 
   cargarProductos() {
     this.api.getProductos().subscribe({
       next: (data: any[]) => {
-        this.productos = data.map(p => ({
-          ...p,
-          precio: Number(p.precio),
-          stock: Number(p.stock)
-        }));
+        this.productos = data.map(p => ({ ...p, precio: Number(p.precio), stock: Number(p.stock) }));
       },
-      error: (error) => {
-        console.log('Error cargando productos', error);
-      }
+      error: (e) => console.log('Error', e)
     });
   }
 
-  async agregarProducto() {
-    const alert = await this.alertController.create({
-      header: 'Nuevo producto',
-      inputs: [
-        { name: 'nombre', type: 'text', placeholder: 'Nombre' },
-        { name: 'descripcion', type: 'text', placeholder: 'Descripción' },
-        { name: 'precio', type: 'number', placeholder: 'Precio' },
-        { name: 'stock', type: 'number', placeholder: 'Stock inicial' },
-        { name: 'imagen', type: 'text', placeholder: 'Emoji o imagen: 🥛' }
-      ],
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Guardar',
-          handler: (data) => {
-            const producto = {
-              nombre: data.nombre,
-              descripcion: data.descripcion,
-              precio: Number(data.precio),
-              stock: Number(data.stock),
-              imagen: data.imagen || '📦'
-            };
-
-            this.api.crearProducto(producto).subscribe(() => {
-              this.cargarProductos();
-            });
-          }
-        }
-      ]
-    });
-
-    await alert.present();
+  agregarProducto() {
+    const nombre = prompt('Nombre del producto:');
+    if (!nombre) return;
+    const descripcion = prompt('Descripcion:') || '';
+    const precio = Number(prompt('Precio:') || 0);
+    const stock = Number(prompt('Stock inicial:') || 0);
+    const imagen = prompt('Emoji:') || '📦';
+    this.api.crearProducto({ nombre, descripcion, precio, stock, imagen }).subscribe(() => this.cargarProductos());
   }
 
-  async editarProducto(producto: any) {
-    const alert = await this.alertController.create({
-      header: 'Editar producto',
-      inputs: [
-        { name: 'nombre', type: 'text', value: producto.nombre, placeholder: 'Nombre' },
-        { name: 'descripcion', type: 'text', value: producto.descripcion, placeholder: 'Descripción' },
-        { name: 'precio', type: 'number', value: producto.precio, placeholder: 'Precio' },
-        { name: 'stock', type: 'number', value: producto.stock, placeholder: 'Stock' },
-        { name: 'imagen', type: 'text', value: producto.imagen, placeholder: 'Emoji' }
-      ],
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Actualizar',
-          handler: (data) => {
-            const actualizado = {
-              nombre: data.nombre,
-              descripcion: data.descripcion,
-              precio: Number(data.precio),
-              stock: Number(data.stock),
-              imagen: data.imagen || '📦'
-            };
-
-            this.api.editarProducto(producto.id, actualizado).subscribe(() => {
-              this.cargarProductos();
-            });
-          }
-        }
-      ]
-    });
-
-    await alert.present();
+  editarProducto(producto: any) {
+    const nombre = prompt('Nombre:', producto.nombre);
+    if (!nombre) return;
+    const descripcion = prompt('Descripcion:', producto.descripcion) || '';
+    const precio = Number(prompt('Precio:', producto.precio) || producto.precio);
+    const stock = Number(prompt('Stock:', producto.stock) || producto.stock);
+    const imagen = prompt('Emoji:', producto.imagen) || producto.imagen;
+    this.api.editarProducto(producto.id, { nombre, descripcion, precio, stock, imagen }).subscribe(() => this.cargarProductos());
   }
 
-  async reponerStock(producto: any) {
-    const alert = await this.alertController.create({
-      header: 'Reponer stock',
-      message: `Producto: ${producto.nombre}`,
-      inputs: [
-        {
-          name: 'cantidad',
-          type: 'number',
-          placeholder: 'Cantidad a agregar'
-        }
-      ],
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Reponer',
-          handler: (data) => {
-            const cantidad = Number(data.cantidad);
-
-            if (cantidad <= 0) {
-              return false;
-            }
-
-            this.api.reponerStock(producto.id, cantidad).subscribe(() => {
-              this.cargarProductos();
-            });
-
-            return true;
-          }
-        }
-      ]
-    });
-
-    await alert.present();
+  reponerStock(producto: any) {
+    const cantidad = Number(prompt('Cantidad a agregar:'));
+    if (!cantidad || cantidad <= 0) return;
+    this.api.reponerStock(producto.id, cantidad).subscribe(() => this.cargarProductos());
   }
 
-  async eliminarProducto(producto: any) {
-    const alert = await this.alertController.create({
-      header: 'Eliminar producto',
-      message: `¿Deseas eliminar ${producto.nombre}?`,
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Eliminar',
-          role: 'destructive',
-          handler: () => {
-            this.api.eliminarProducto(producto.id).subscribe(() => {
-              this.cargarProductos();
-            });
-          }
-        }
-      ]
-    });
-
-    await alert.present();
+  eliminarProducto(producto: any) {
+    if (!confirm('Eliminar ' + producto.nombre + '?')) return;
+    this.api.eliminarProducto(producto.id).subscribe(() => this.cargarProductos());
   }
 }
