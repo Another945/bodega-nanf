@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { Api } from '../services/api';
 
@@ -16,12 +16,14 @@ export class MermaPage implements OnInit {
   productos: any[] = [];
   productosMerma: any[] = [];
 
-  constructor(
-    private alertController: AlertController,
-    private api: Api
-  ) {}
+  constructor(private api: Api) {}
 
   ngOnInit() {
+    this.cargarProductos();
+    this.cargarMerma();
+  }
+
+  ionViewWillEnter() {
     this.cargarProductos();
     this.cargarMerma();
   }
@@ -29,15 +31,9 @@ export class MermaPage implements OnInit {
   cargarProductos() {
     this.api.getProductos().subscribe({
       next: (data: any[]) => {
-        this.productos = data.map(p => ({
-          ...p,
-          precio: Number(p.precio),
-          stock: Number(p.stock)
-        }));
+        this.productos = data.map(p => ({ ...p, precio: Number(p.precio), stock: Number(p.stock) }));
       },
-      error: (error) => {
-        console.log('Error cargando productos', error);
-      }
+      error: (e) => console.log('Error', e)
     });
   }
 
@@ -50,168 +46,60 @@ export class MermaPage implements OnInit {
           cantidad: Number(item.cantidad),
           estado: Number(item.perdida) >= 20 ? 'Alto' : 'Medio'
         }));
-
-        this.mermaTotal = this.productosMerma.reduce(
-          (total, item) => total + Number(item.perdida),
-          0
-        );
+        this.mermaTotal = this.productosMerma.reduce((total, item) => total + Number(item.perdida), 0);
       },
-      error: (error) => {
-        console.log('Error cargando merma', error);
+      error: (e) => console.log('Error', e)
+    });
+  }
+
+  registrarMerma() {
+    if (this.productos.length === 0) {
+      alert('Sin productos. Primero carga los productos.');
+      return;
+    }
+
+    const lista = this.productos.map((p, i) => i + 1 + '. ' + p.nombre + ' (Stock: ' + p.stock + ')').join('\n');
+    const seleccion = Number(prompt('Selecciona el numero del producto:\n' + lista));
+    if (!seleccion || seleccion < 1 || seleccion > this.productos.length) return;
+
+    const producto = this.productos[seleccion - 1];
+    const motivo = prompt('Motivo (vencido, danado, roto):');
+    if (!motivo) return;
+
+    const cantidad = Number(prompt('Cantidad:'));
+    if (!cantidad || cantidad <= 0) return;
+    if (cantidad > producto.stock) { alert('Stock insuficiente.'); return; }
+
+    const perdida = Number(prompt('Perdida en soles:'));
+    if (!perdida || perdida <= 0) return;
+
+    const nuevaMerma = {
+      producto_id: producto.id,
+      producto: producto.nombre,
+      motivo,
+      cantidad,
+      perdida
+    };
+
+    this.api.registrarMerma(nuevaMerma).subscribe({
+      next: () => {
+        this.cargarMerma();
+        this.cargarProductos();
+        alert('Merma registrada correctamente.');
+      },
+      error: (e) => {
+        console.log('Error', e);
+        alert('Error al registrar la merma.');
       }
     });
   }
 
-async registrarMerma() {
-
-  if (this.productos.length === 0) {
-    await this.mostrarMensaje(
-      'Sin productos',
-      'Primero deben cargarse los productos desde la base de datos.'
-    );
-    return;
+  eliminarMerma(index: number) {
+    const merma = this.productosMerma[index];
+    if (!confirm('Eliminar este registro de merma?')) return;
+    this.api.eliminarMerma(merma.id).subscribe({
+      next: () => this.cargarMerma(),
+      error: (e) => console.log('Error', e)
+    });
   }
-
-  const alertProducto = await this.alertController.create({
-    header: 'Seleccionar producto',
-    message: 'Elige el producto que tendrá merma.',
-    inputs: this.productos.map(producto => ({
-      name: 'producto',
-      type: 'radio',
-      label: `${producto.nombre} | Stock: ${producto.stock}`,
-      value: producto.id
-    })),
-    buttons: [
-      {
-        text: 'Cancelar',
-        role: 'cancel'
-      },
-      {
-        text: 'Siguiente',
-        handler: async (productoId) => {
-
-          const producto = this.productos.find(
-            p => p.id === Number(productoId)
-          );
-
-          if (!producto) {
-            this.mostrarMensaje('Error', 'Debes seleccionar un producto.');
-            return false;
-          }
-
-          await this.abrirFormularioMerma(producto);
-          return true;
-        }
-      }
-    ]
-  });
-
-  await alertProducto.present();
-}
-
-async abrirFormularioMerma(producto: any) {
-
-  const alertDatos = await this.alertController.create({
-    header: 'Datos de la merma',
-    message: `Producto seleccionado: ${producto.nombre}`,
-    inputs: [
-      {
-        name: 'motivo',
-        type: 'text',
-        placeholder: 'Motivo: vencido, dañado, roto'
-      },
-      {
-        name: 'cantidad',
-        type: 'number',
-        placeholder: 'Cantidad'
-      },
-      {
-        name: 'perdida',
-        type: 'number',
-        placeholder: 'Pérdida en soles'
-      }
-    ],
-    buttons: [
-      {
-        text: 'Cancelar',
-        role: 'cancel'
-      },
-      {
-        text: 'Guardar',
-        handler: (data) => {
-
-          const cantidad = Number(data.cantidad);
-          const perdida = Number(data.perdida);
-
-          if (!data.motivo || cantidad <= 0 || perdida <= 0) {
-            this.mostrarMensaje(
-              'Campos inválidos',
-              'Completa motivo, cantidad y pérdida correctamente.'
-            );
-            return false;
-          }
-
-          if (cantidad > producto.stock) {
-            this.mostrarMensaje(
-              'Stock insuficiente',
-              'La cantidad supera el stock disponible.'
-            );
-            return false;
-          }
-
-          const nuevaMerma = {
-            producto_id: producto.id,
-            producto: producto.nombre,
-            motivo: data.motivo,
-            cantidad: cantidad,
-            perdida: perdida
-          };
-
-          this.api.registrarMerma(nuevaMerma).subscribe({
-            next: () => {
-              this.cargarMerma();
-              this.cargarProductos();
-
-              this.mostrarMensaje(
-                'Merma registrada',
-                'La merma fue guardada y el stock fue descontado correctamente.'
-              );
-            },
-            error: (error) => {
-              console.log('Error registrando merma', error);
-              this.mostrarMensaje('Error', 'No se pudo registrar la merma.');
-            }
-          });
-
-          return true;
-        }
-      }
-    ]
-  });
-
-  await alertDatos.present();
-}
-
-eliminarMerma(index: number) {
-  const merma = this.productosMerma[index];
-
-  this.api.eliminarMerma(merma.id).subscribe({
-    next: () => {
-      this.cargarMerma();
-    },
-    error: (error) => {
-      console.log('Error eliminando merma', error);
-    }
-  });
-}
-
-async mostrarMensaje(header: string, message: string) {
-  const alerta = await this.alertController.create({
-    header,
-    message,
-    buttons: ['OK']
-  });
-
-  await alerta.present();
-}
 }
