@@ -196,8 +196,10 @@ exportarPDF() {
   pdf.setFontSize(9);
   pdf.text('Bodega NANF | Reporte generado automáticamente desde el sistema', 12, 290);
 
-  const pdfBlob = pdf.output('blob');
-const url = URL.createObjectURL(pdfBlob);
-window.open(url, '_blank');
+  const pdfData = pdf.output('datauristring');
+const newWindow = window.open('');
+if (newWindow) {
+  newWindow.document.write('<iframe width="100%" height="100%" src="' + pdfData + '"></iframe>');
+}
 }
 }
