@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 import { Api } from '../services/api';
 import Chart from 'chart.js/auto';
 import jsPDF from 'jspdf';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { FileOpener } from '@capawesome/capacitor-file-opener';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-reportes',
@@ -91,115 +94,147 @@ export class ReportesPage implements OnInit, AfterViewInit {
     });
   }
 
-exportarPDF() {
-  const pdf = new jsPDF();
+  async exportarPDF() {
+    const pdf = new jsPDF();
 
-  // Fondo superior
-  pdf.setFillColor(37, 99, 235);
-  pdf.rect(0, 0, 210, 35, 'F');
+    // Fondo superior
+    pdf.setFillColor(37, 99, 235);
+    pdf.rect(0, 0, 210, 35, 'F');
 
-  // Título
-  pdf.setTextColor(255, 255, 255);
-  pdf.setFontSize(20);
-  pdf.setFont('helvetica', 'bold');
-  pdf.text('Reporte General - Bodega NANF', 12, 18);
+    // Título
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(20);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Reporte General - Bodega NANF', 12, 18);
 
-  pdf.setFontSize(10);
-  pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
 
-  // Fecha
-  const fecha = new Date().toLocaleString();
+    // Fecha
+    const fecha = new Date().toLocaleString();
 
-  pdf.setTextColor(30, 41, 59);
-  pdf.setFontSize(10);
-  pdf.text(`Generado: ${fecha}`, 12, 45);
+    pdf.setTextColor(30, 41, 59);
+    pdf.setFontSize(10);
+    pdf.text(`Generado: ${fecha}`, 12, 45);
 
-  // Tarjetas resumen
-  const cards = [
-    ['Ventas Hoy', `S/ ${this.ventasHoy.toFixed(2)}`],
-    ['Ventas Totales', `S/ ${this.ventasTotales.toFixed(2)}`],
-    ['Merma', `S/ ${this.mermaTotal.toFixed(2)}`],
-    ['Stock Bajo', `${this.stockBajo.length} productos`]
-  ];
+    // Tarjetas resumen
+    const cards = [
+      ['Ventas Hoy', `S/ ${this.ventasHoy.toFixed(2)}`],
+      ['Ventas Totales', `S/ ${this.ventasTotales.toFixed(2)}`],
+      ['Merma', `S/ ${this.mermaTotal.toFixed(2)}`],
+      ['Stock Bajo', `${this.stockBajo.length} productos`]
+    ];
 
-  let x = 12;
-  let y = 55;
+    let x = 12;
+    let y = 55;
 
-  cards.forEach((card, index) => {
-    pdf.setFillColor(248, 250, 252);
-    pdf.roundedRect(x, y, 42, 25, 4, 4, 'F');
+    cards.forEach((card, index) => {
+      pdf.setFillColor(248, 250, 252);
+      pdf.roundedRect(x, y, 42, 25, 4, 4, 'F');
+
+      pdf.setTextColor(100, 116, 139);
+      pdf.setFontSize(9);
+      pdf.text(card[0], x + 4, y + 8);
+
+      pdf.setTextColor(15, 23, 42);
+      pdf.setFontSize(13);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(card[1], x + 4, y + 18);
+
+      x += 48;
+
+      if (index === 3) {
+        x = 12;
+        y += 35;
+      }
+    });
+
+    // Historial
+    pdf.setTextColor(15, 23, 42);
+    pdf.setFontSize(15);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Historial de Ventas', 12, 100);
+
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+
+    let filaY = 112;
+
+    this.historialVentas.slice(0, 8).forEach((venta) => {
+      pdf.setFillColor(255, 255, 255);
+      pdf.roundedRect(12, filaY - 6, 185, 10, 2, 2, 'F');
+
+      pdf.setTextColor(51, 65, 85);
+      pdf.text(`Venta #${venta.id}`, 16, filaY);
+
+      pdf.text(`S/ ${Number(venta.total).toFixed(2)}`, 160, filaY);
+
+      filaY += 12;
+    });
+
+    // Productos vendidos
+    pdf.setFontSize(15);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(15, 23, 42);
+    pdf.text('Productos más vendidos', 12, filaY + 8);
+
+    filaY += 20;
+
+    this.productosVendidos.slice(0, 5).forEach((producto) => {
+      pdf.setFontSize(10);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(51, 65, 85);
+
+      pdf.text(producto.nombre, 16, filaY);
+      pdf.text(`${producto.cantidad} unidades`, 155, filaY);
+
+      filaY += 10;
+    });
+
+    // Pie
+    pdf.setFillColor(241, 245, 249);
+    pdf.rect(0, 280, 210, 17, 'F');
 
     pdf.setTextColor(100, 116, 139);
     pdf.setFontSize(9);
-    pdf.text(card[0], x + 4, y + 8);
+    pdf.text('Bodega NANF | Reporte generado automáticamente desde el sistema', 12, 290);
 
-    pdf.setTextColor(15, 23, 42);
-    pdf.setFontSize(13);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text(card[1], x + 4, y + 18);
+    // ===== Exportación según plataforma =====
 
-    x += 48;
+    const nombreArchivo = `ReporteNANF_${Date.now()}.pdf`;
 
-    if (index === 3) {
-      x = 12;
-      y += 35;
+    // Si corre en navegador (ionic serve / modo dev), descarga clásica
+    if (!Capacitor.isNativePlatform()) {
+      pdf.save(nombreArchivo);
+      return;
     }
-  });
 
-  // Historial
-  pdf.setTextColor(15, 23, 42);
-  pdf.setFontSize(15);
-  pdf.setFont('helvetica', 'bold');
-  pdf.text('Historial de Ventas', 12, 100);
+    // En la app empaquetada para Android
+    try {
+      const pdfBase64 = pdf.output('datauristring').split(',')[1];
 
-  pdf.setFontSize(10);
-  pdf.setFont('helvetica', 'normal');
+      const resultado = await Filesystem.writeFile({
+        path: nombreArchivo,
+        data: pdfBase64,
+        directory: Directory.Documents,
+        recursive: true
+      });
 
-  let filaY = 112;
+      console.log('PDF guardado en:', resultado.uri);
 
-  this.historialVentas.slice(0, 8).forEach((venta) => {
-    pdf.setFillColor(255, 255, 255);
-    pdf.roundedRect(12, filaY - 6, 185, 10, 2, 2, 'F');
+      try {
+        await FileOpener.openFile({
+          path: resultado.uri,
+          mimeType: 'application/pdf'
+        });
+      } catch (errorAbrir) {
+        console.log('No se pudo abrir automáticamente, pero el archivo quedó guardado', errorAbrir);
+        alert(`El reporte se guardó como "${nombreArchivo}" en Documentos/Descargas, pero no se pudo abrir automáticamente. Puedes abrirlo desde tu explorador de archivos.`);
+      }
 
-    pdf.setTextColor(51, 65, 85);
-    pdf.text(`Venta #${venta.id}`, 16, filaY);
-
-    pdf.text(`S/ ${Number(venta.total).toFixed(2)}`, 160, filaY);
-
-    filaY += 12;
-  });
-
-  // Productos vendidos
-  pdf.setFontSize(15);
-  pdf.setFont('helvetica', 'bold');
-  pdf.setTextColor(15, 23, 42);
-  pdf.text('Productos más vendidos', 12, filaY + 8);
-
-  filaY += 20;
-
-  this.productosVendidos.slice(0, 5).forEach((producto) => {
-    pdf.setFontSize(10);
-    pdf.setFont('helvetica', 'normal');
-    pdf.setTextColor(51, 65, 85);
-
-    pdf.text(producto.nombre, 16, filaY);
-    pdf.text(`${producto.cantidad} unidades`, 155, filaY);
-
-    filaY += 10;
-  });
-
-  // Pie
-  pdf.setFillColor(241, 245, 249);
-  pdf.rect(0, 280, 210, 17, 'F');
-
-  pdf.setTextColor(100, 116, 139);
-  pdf.setFontSize(9);
-  pdf.text('Bodega NANF | Reporte generado automáticamente desde el sistema', 12, 290);
-
-  const pdfData = pdf.output('datauristring');
-const newWindow = window.open('');
-if (newWindow) {
-  newWindow.document.write('<iframe width="100%" height="100%" src="' + pdfData + '"></iframe>');
-}
-}
+    } catch (error) {
+      console.log('Error guardando el PDF', error);
+      alert('Hubo un error al generar el reporte PDF.');
+    }
+  }
 }
