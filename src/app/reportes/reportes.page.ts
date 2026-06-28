@@ -5,7 +5,7 @@ import { Api } from '../services/api';
 import Chart from 'chart.js/auto';
 import jsPDF from 'jspdf';
 import { Filesystem, Directory } from '@capacitor/filesystem';
-import { FileOpener } from '@capawesome/capacitor-file-opener';
+import { FileOpener } from '@capawesome-team/capacitor-file-opener';
 import { Capacitor } from '@capacitor/core';
 
 @Component({
