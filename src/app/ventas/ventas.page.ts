@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../services/api';
@@ -17,28 +17,19 @@ interface ItemCarrito extends Producto {
   imports: [IonicModule, CommonModule, FormsModule]
 })
 export class VentasPage implements OnInit {
-
   productos: Producto[] = [];
   carrito: ItemCarrito[] = [];
   busqueda: string = '';
 
-  constructor(
-    private api: Api,
-    private alertController: AlertController
-  ) {}
+  constructor(private api: Api) {}
 
-  ngOnInit() {
-    this.cargarProductos();
-  }
+  ngOnInit() { this.cargarProductos(); }
+  ionViewWillEnter() { this.cargarProductos(); }
 
   cargarProductos() {
     this.api.getProductos().subscribe({
-      next: (data: any[]) => {
-        this.productos = data;
-      },
-      error: (error) => {
-        console.log('Error cargando productos', error);
-      }
+      next: (data: any[]) => { this.productos = data; },
+      error: (e) => console.log('Error', e)
     });
   }
 
@@ -49,33 +40,18 @@ export class VentasPage implements OnInit {
   }
 
   get total() {
-    return this.carrito.reduce(
-      (sum, item) => sum + Number(item.precio) * item.cantidad,
-      0
-    );
+    return this.carrito.reduce((sum, item) => sum + Number(item.precio) * item.cantidad, 0);
   }
 
   get cantidadTotal() {
-    return this.carrito.reduce(
-      (sum, item) => sum + item.cantidad,
-      0
-    );
+    return this.carrito.reduce((sum, item) => sum + item.cantidad, 0);
   }
 
   agregar(producto: Producto) {
-    if (producto.stock <= 0) {
-      this.mostrarAlerta('Sin stock', 'Este producto ya no tiene stock disponible.');
-      return;
-    }
-
+    if (producto.stock <= 0) { alert('Sin stock disponible.'); return; }
     const item = this.carrito.find(p => p.id === producto.id);
-
     if (item) {
-      if (item.cantidad >= producto.stock) {
-        this.mostrarAlerta('Stock insuficiente', 'No puedes agregar más unidades que el stock disponible.');
-        return;
-      }
-
+      if (item.cantidad >= producto.stock) { alert('Stock insuficiente.'); return; }
       item.cantidad++;
     } else {
       this.carrito.push({ ...producto, cantidad: 1 });
@@ -84,36 +60,24 @@ export class VentasPage implements OnInit {
 
   aumentar(item: ItemCarrito) {
     const producto = this.productos.find(p => p.id === item.id);
-
-    if (producto && item.cantidad < producto.stock) {
-      item.cantidad++;
-    } else {
-      this.mostrarAlerta('Stock insuficiente', 'No hay más unidades disponibles.');
-    }
+    if (producto && item.cantidad < producto.stock) { item.cantidad++; }
+    else { alert('No hay mas unidades disponibles.'); }
   }
 
   disminuir(item: ItemCarrito) {
-    if (item.cantidad > 1) {
-      item.cantidad--;
-    }
+    if (item.cantidad > 1) { item.cantidad--; }
   }
 
   eliminar(id: number) {
     this.carrito = this.carrito.filter(item => item.id !== id);
   }
 
-  vaciarCarrito() {
-    this.carrito = [];
-  }
+  vaciarCarrito() { this.carrito = []; }
 
-  async finalizarVenta() {
-    if (this.carrito.length === 0) {
-      await this.mostrarAlerta(
-        'Carrito vacío',
-        'Agrega productos antes de finalizar la venta.'
-      );
-      return;
-    }
+  finalizarVenta() {
+    if (this.carrito.length === 0) { alert('Agrega productos antes de finalizar la venta.'); return; }
+
+    if (!confirm('Finalizar venta por S/ ' + this.total.toFixed(2) + '?')) return;
 
     const venta = {
       total: this.total,
@@ -126,34 +90,15 @@ export class VentasPage implements OnInit {
     };
 
     this.api.registrarVenta(venta).subscribe({
-      next: async () => {
-        await this.mostrarAlerta(
-          'Venta registrada',
-          `Total vendido: S/ ${this.total.toFixed(2)}`
-        );
-
+      next: () => {
+        alert('Venta registrada. Total: S/ ' + this.total.toFixed(2));
         this.vaciarCarrito();
         this.cargarProductos();
       },
-      error: async (error) => {
-        console.log('Error registrando venta', error);
-
-        await this.mostrarAlerta(
-          'Error',
-          'No se pudo registrar la venta.'
-        );
+      error: (e) => {
+        console.log('Error', e);
+        alert('No se pudo registrar la venta.');
       }
     });
   }
-
-  async mostrarAlerta(header: string, message: string) {
-    const alert = await this.alertController.create({
-      header,
-      message,
-      buttons: ['OK']
-    });
-
-    await alert.present();
-  }
-
 }
